@@ -2057,7 +2057,7 @@ function attempt_connect(popup_aiselect = true)
             perfdata.queued_tokens += data.queued_tokens;
             perfdata.past_minute_tokens += data.past_minute_tokens;
             document.body.classList.add("connected");
-            document.getElementById("connectstatus").innerHTML = "тнє gяι∂";
+            document.getElementById("connectstatus").innerHTML = '<img src="images/grid-image.png" alt="The Grid" style="width: 50px; height: auto;" />';
             document.getElementById("connectstatus").classList.add("color_offwhite");
             render_gametext(false);
 
@@ -6986,7 +6986,7 @@ function confirm_horde_models() {
     render_gametext();
     hide_popups();
 
-    document.getElementById("connectstatus").innerHTML = "тнє gяι∂";
+    document.getElementById("connectstatus").innerHTML = '<img src="images/grid-image.png" alt="The Grid" style="width: 50px; height: auto;" />';
 }
 
 function delete_my_worker(index)
