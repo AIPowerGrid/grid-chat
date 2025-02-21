@@ -5181,7 +5181,7 @@ function show_dynatemp()
 
 function explain_horde()
 {
-    msgbox("The the Grid generates text using crowdsourced GPUs by volunteer workers. By default your inputs are not logged, but as Grid workers are open source, they can be modified to do so. <br><br>In all cases, the sender will *always be anonymous*, however you are still advised to avoid sending privacy sensitive information.<br>","Disclaimer",true);
+    msgbox("The Grid generates text and images using crowdsourced GPUs by incentivized workers. By default your inputs are not logged, but as Grid workers are open source, they can be modified to do so. <br><br>In all cases, the sender will *always be anonymous*, however you are still advised to avoid sending privacy sensitive information.<br>","Disclaimer",true);
 }
 
 function go_to_stableui()
@@ -11724,13 +11724,13 @@ function update_clicked_image(imghash)
 
         let togglebtn = `<select class="form-control" id="aivisionmode" style="display:inline;height:24px;width: 140px; padding: 2px; margin: 3px; font-size:12px;" onchange="toggle_ai_vision(\'`+imghash+`\')">
                             <option value="0">Disabled</option>
-                            <option value="1">Interrogate (Horde)</option>
+                            <option value="1">Interrogate (Grid)</option>
                             <option value="2">Interrogate (KCPP / Forge / A1111)</option>
                             <option value="3">Multimodal (KCPP Mmproj)</option>
                             <option value="4">OpenAI Vision (API)</option>
                         </select>`;
         document.getElementById("zoomedimgdesc").innerHTML = `
-        AI Vision: `+visionstatus+` <span class="helpicon">?<span class="helptext">Allows the AI to see and react to this image. On KoboldCpp, LLaVA models can be used. Horde or Local KoboldCpp / Forge / A1111 use image interrogation if enabled. For OpenAI API, only works with Vision Models like Gpt4o.</span></span>
+        AI Vision: `+visionstatus+` <span class="helpicon">?<span class="helptext">Allows the AI to see and react to this image. On KoboldCpp, LLaVA models can be used. Grid or Local KoboldCpp / Forge / A1111 use image interrogation if enabled. For OpenAI API, only works with Vision Models like Gpt4o.</span></span>
         `+togglebtn+`
         <br><button type="button" class="btn btn-primary" style="width: 140px; padding: 2px; margin: 3px; font-size:12px;" onclick="show_orig_prompt()">View Original Prompt</button>
         <button type="button" class="btn btn-primary" style="width: 110px; padding: 2px; margin: 3px; font-size:12px;" onclick="add_img2img()">Create Img2Img</button>
@@ -13683,7 +13683,7 @@ function render_gametext(save = true)
                 whorun = "<br>You're using the Cohere API";
             }
             else {
-                whorun = `<br>Horde <a class="color_green mainnav" href="#" tabindex="${mainmenu_is_untab?`-1`:`0`}" onclick="get_and_show_workers()">Volunteer(s)</a> are running <span class="color_orange">${selected_models.reduce((s, a) => s + a.count, 0)} threads</span> for selected models with a total queue length of <span class="color_orange">${selected_models.reduce((s, a) => s + a.queued, 0)}</span> tokens`;
+                whorun = `<br>Grid <a class="color_green mainnav" href="#" tabindex="${mainmenu_is_untab?`-1`:`0`}" onclick="get_and_show_workers()">Worker(s)</a> are running <span class="color_orange">${selected_models.reduce((s, a) => s + a.count, 0)} threads</span> for selected models with a total queue length of <span class="color_orange">${selected_models.reduce((s, a) => s + a.queued, 0)}</span> tokens`;
             }
             let nowmode = (localsettings.opmode==1?"Story Mode":(localsettings.opmode==2?"Adventure Mode":(localsettings.opmode==3?"Chat Mode":"Instruct Mode")));
             let selmodelstr = "";
@@ -13998,7 +13998,7 @@ function render_gametext(save = true)
         document.getElementById("fvico").href = favivon_normal;
     }
     else if (selected_models.length == 0 && selected_workers.length == 0) {
-        let perfinfo = `There are <span class="color_orange">${perfdata.worker_count}</span> total <a class="color_green mainnav" tabindex="${mainmenu_is_untab?`-1`:`0`}" href="#" onclick="get_and_show_workers()">volunteer(s)</a> in the the Grid, and <span class="color_orange">${perfdata.queued_requests}</span> request(s) in queues.<br>A total of <span class="color_orange">${perfdata.past_minute_tokens}</span> tokens were generated in the last minute.<br><br>`;
+        let perfinfo = `There are <span class="color_orange">${perfdata.worker_count}</span> total <a class="color_green mainnav" tabindex="${mainmenu_is_untab?`-1`:`0`}" href="#" onclick="get_and_show_workers()">worker(s)</a> in the Grid, and <span class="color_orange">${perfdata.queued_requests}</span> request(s) in queues.<br>A total of <span class="color_orange">${perfdata.past_minute_tokens}</span> tokens were generated in the last minute.<br><br>`;
         document.getElementById("gametext").innerHTML = `Welcome to <span class="color_cyan">KoboldAI Lite</span>!<br><br>${perfinfo}<a href="#" class="color_blueurl" onclick="display_endpoint_container()">Please select an AI service to use!</a><br>`;
         document.getElementById("fvico").href = favivon_normal;
     }
