@@ -1937,13 +1937,13 @@ Current version indicated by LITEVER below.
     	background-position: 8px;
 		background-size: 24px;
 	}
-	.corporightpanel
-	{
-		width: 100%;
+	.corporightpanel {
+		width: 200%;
 		height: calc(100vh - 68px);
 		display: flex;
-    	flex-direction: column;
-		padding-left: 2px;
+		flex-direction: column;
+		align-items: flex-start; /* Align items to the start (left) */
+		padding-left: 20px;      /* Add padding to the left */
 		padding-right: 2px;
 	}
 	.corpo_leftpanel_close
@@ -2016,12 +2016,12 @@ Current version indicated by LITEVER below.
 		flex-direction: column;
 		text-align: center;
 	}
-	.corpomainbtm
-	{
-		padding-left: 2px;
-		padding-right: 2px;
-		margin-top: auto;
-	}
+	.corpomainbtm {
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-top: auto;
+    width: 100%; /* Or a specific pixel value */
+}
 	.corpostylemain
 	{
 		overflow-y: auto;
