@@ -14480,7 +14480,7 @@ function corpo_edit_chunk_save()
 
 // Simple animated loading indicators
 const loadingAnimations = [
-    "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏", // Spinner
+    "⣾⣽⣻⢿⡿⣟⣯⣷ ⠁⠂⠄⡀⢀⠠⠐⠈", // Spinner
 ];
 
 // Simple messages that appear with the animation
