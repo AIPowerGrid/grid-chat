@@ -14478,54 +14478,73 @@ function corpo_edit_chunk_save()
     render_gametext(needsave);
 }
 
-// Add these at the top of your file or in constants.js
-const loadingMessages = [
-    "Thinking...",
-    "Processing...",
-    "Generating ideas...",
-    "Crafting response...",
-    "Pondering...",
-    "Contemplating...",
-    "Analyzing context...",
-    "Formulating thoughts...",
-    "Connecting concepts...",
-    "Exploring possibilities..."
+// Simple animated loading indicators
+const loadingAnimations = [
+    "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏", // Spinner
 ];
 
-let currentLoadingMessageIndex = 0;
-let loadingMessageInterval = null;
+// Simple messages that appear with the animation
+const loadingMessages = [
+    "Thinking",
+];
 
-// Function to start the loading message rotation
-function startLoadingMessageRotation() {
-    if (loadingMessageInterval === null) {
-        // Initialize with a random message
-        currentLoadingMessageIndex = Math.floor(Math.random() * loadingMessages.length);
-        loadingMessageInterval = setInterval(() => {
-            currentLoadingMessageIndex = (currentLoadingMessageIndex + 1) % loadingMessages.length;
-            updateLoadingMessage();
-        }, 2000); // Change message every 2 seconds
+// Variables to control the animation
+let animationFrame = 0;
+let animationInterval = null;
+let selectedAnimation = 0;
+let selectedMessage = 0;
+
+// Function to start the loading animation
+function startLoadingAnimation() {
+    if (animationInterval === null) {
+        // Select a random animation and message
+        selectedAnimation = Math.floor(Math.random() * loadingAnimations.length);
+        selectedMessage = Math.floor(Math.random() * loadingMessages.length);
+        animationFrame = 0;
+        
+        // Start the animation interval
+        animationInterval = setInterval(() => {
+            updateLoadingAnimation();
+        }, 150); // Update every 150ms for a smooth animation
     }
 }
 
-// Function to stop the loading message rotation
-function stopLoadingMessageRotation() {
-    if (loadingMessageInterval !== null) {
-        clearInterval(loadingMessageInterval);
-        loadingMessageInterval = null;
+// Function to stop the loading animation
+function stopLoadingAnimation() {
+    if (animationInterval !== null) {
+        clearInterval(animationInterval);
+        animationInterval = null;
     }
 }
 
-// Function to update all loading message placeholders
-function updateLoadingMessage() {
-    const loadingMessage = loadingMessages[currentLoadingMessageIndex];
+// Function to update the loading animation
+function updateLoadingAnimation() {
     const elements = document.querySelectorAll(".pending_text");
     
     if (elements && elements.length > 0) {
+        // Get the current animation character
+        const animation = loadingAnimations[selectedAnimation];
+        const char = animation[animationFrame % animation.length];
+        const message = loadingMessages[selectedMessage];
+        
+        // Increment the animation frame
+        animationFrame++;
+        
+        // Every 20 frames, change the message
+        if (animationFrame % 20 === 0) {
+            selectedMessage = (selectedMessage + 1) % loadingMessages.length;
+        }
+        
         elements.forEach(function (element) {
             // Only update if it's a placeholder, not actual content
             if (element.textContent === "..." || 
-                loadingMessages.some(msg => element.textContent === msg)) {
-                element.textContent = loadingMessage;
+                element.textContent.includes("Thinking") ||
+                element.textContent.includes("Processing") ||
+                element.textContent.includes("Working") ||
+                element.textContent.includes("Generating") ||
+                /[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏⣾⣽⣻⢿⡿⣟⣯⣷▰▱▪▫●○◐◓◑◒◢◣◤◥◰◳◲◱]/.test(element.textContent)) {
+                
+                element.textContent = `${message} ${char}`;
             }
         });
     }
@@ -14574,10 +14593,10 @@ function render_corpo_ui(input)
     let incomplete_resp = (synchro_pending_stream!="" || pending_response_id!="");
     
     // Start or stop the loading animation based on response status
-    if (incomplete_resp && loadingMessageInterval === null) {
-        startLoadingMessageRotation();
-    } else if (!incomplete_resp && loadingMessageInterval !== null) {
-        stopLoadingMessageRotation();
+    if (incomplete_resp && animationInterval === null) {
+        startLoadingAnimation();
+    } else if (!incomplete_resp && animationInterval !== null) {
+        stopLoadingAnimation();
     }
 
     // Rest of the function remains unchanged until the incomplete_resp section
@@ -14703,10 +14722,12 @@ function render_corpo_ui(input)
     if(incomplete_resp)
     {
         let namepart = cosmetic_corpo_ai_nick;
-        // Use the current loading message if there's no stream content
+        // Use a simple initial loading indicator if there's no stream content
+        let initialAnimation = loadingAnimations[0][0];
+        let initialMessage = loadingMessages[0];
         let futuretext = (synchro_pending_stream!="" ? 
             (escape_html(pending_context_preinjection) + escape_html(synchro_pending_stream)) : 
-            loadingMessages[currentLoadingMessageIndex]);
+            `${initialMessage}... ${initialAnimation}`);
             
         if(localsettings.opmode==3)
         {
@@ -14722,6 +14743,30 @@ function render_corpo_ui(input)
     }
 
     return newbodystr;
+}
+
+// Also update the pending stream display function to work with our loading animation
+function update_pending_stream_displays()
+{
+    //lightweight function to only update pending streamed text
+    var elements = document.querySelectorAll(".pending_text");
+
+    if(elements && elements.length>0)
+    {
+        elements.forEach(function (element) {
+            // If we have actual content, update with that
+            if (synchro_pending_stream != "") {
+                element.innerHTML = escape_html(pending_context_preinjection) + escape_html(synchro_pending_stream);
+                // If we have actual content, stop the animation
+                stopLoadingAnimation();
+            }
+            // Otherwise, the animation will continue automatically
+        });
+    } else {
+        render_gametext(false);
+    }
+
+    handle_autoscroll(false);
 }
 
 // Also update the pending stream display function to work with our loading messages
