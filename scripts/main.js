@@ -14478,9 +14478,64 @@ function corpo_edit_chunk_save()
     render_gametext(needsave);
 }
 
+// Add these at the top of your file or in constants.js
+const loadingMessages = [
+    "Thinking...",
+    "Processing...",
+    "Generating ideas...",
+    "Crafting response...",
+    "Pondering...",
+    "Contemplating...",
+    "Analyzing context...",
+    "Formulating thoughts...",
+    "Connecting concepts...",
+    "Exploring possibilities..."
+];
+
+let currentLoadingMessageIndex = 0;
+let loadingMessageInterval = null;
+
+// Function to start the loading message rotation
+function startLoadingMessageRotation() {
+    if (loadingMessageInterval === null) {
+        // Initialize with a random message
+        currentLoadingMessageIndex = Math.floor(Math.random() * loadingMessages.length);
+        loadingMessageInterval = setInterval(() => {
+            currentLoadingMessageIndex = (currentLoadingMessageIndex + 1) % loadingMessages.length;
+            updateLoadingMessage();
+        }, 2000); // Change message every 2 seconds
+    }
+}
+
+// Function to stop the loading message rotation
+function stopLoadingMessageRotation() {
+    if (loadingMessageInterval !== null) {
+        clearInterval(loadingMessageInterval);
+        loadingMessageInterval = null;
+    }
+}
+
+// Function to update all loading message placeholders
+function updateLoadingMessage() {
+    const loadingMessage = loadingMessages[currentLoadingMessageIndex];
+    const elements = document.querySelectorAll(".pending_text");
+    
+    if (elements && elements.length > 0) {
+        elements.forEach(function (element) {
+            // Only update if it's a placeholder, not actual content
+            if (element.textContent === "..." || 
+                loadingMessages.some(msg => element.textContent === msg)) {
+                element.textContent = loadingMessage;
+            }
+        });
+    }
+}
+
+// Now modify just the relevant part of render_corpo_ui
 var cosmetic_corpo_ai_nick = "The Grid";
 function corpo_click_avatar()
 {
+    // Existing code unchanged
     inputBox("Set Cosmetic AI Nickname\n(This is purely cosmetic and does not affect responses, and is not saved).","Set Cosmetic AI Nickname",cosmetic_corpo_ai_nick,"Set Cosmetic AI Nickname", ()=>{
         let userinput = getInputBoxValue();
         userinput = userinput.trim();
@@ -14517,9 +14572,18 @@ function render_corpo_ui(input)
     }
 
     let incomplete_resp = (synchro_pending_stream!="" || pending_response_id!="");
+    
+    // Start or stop the loading animation based on response status
+    if (incomplete_resp && loadingMessageInterval === null) {
+        startLoadingMessageRotation();
+    } else if (!incomplete_resp && loadingMessageInterval !== null) {
+        stopLoadingMessageRotation();
+    }
 
+    // Rest of the function remains unchanged until the incomplete_resp section
     for(var i=0;i<chatunits.length;++i)
     {
+        // All this code remains unchanged
         let curr = chatunits[i];
         let foundimg = "";
         let processed_msg = curr.msg;
@@ -14634,10 +14698,16 @@ function render_corpo_ui(input)
             </div>
             </div>`;
     }
+    
+    // This is the only part we're modifying
     if(incomplete_resp)
     {
         let namepart = cosmetic_corpo_ai_nick;
-        let futuretext = (synchro_pending_stream!=""?(escape_html(pending_context_preinjection) + escape_html(synchro_pending_stream)):"...");
+        // Use the current loading message if there's no stream content
+        let futuretext = (synchro_pending_stream!="" ? 
+            (escape_html(pending_context_preinjection) + escape_html(synchro_pending_stream)) : 
+            loadingMessages[currentLoadingMessageIndex]);
+            
         if(localsettings.opmode==3)
         {
             namepart = "";
@@ -14652,6 +14722,30 @@ function render_corpo_ui(input)
     }
 
     return newbodystr;
+}
+
+// Also update the pending stream display function to work with our loading messages
+function update_pending_stream_displays()
+{
+    //lightweight function to only update pending streamed text
+    var elements = document.querySelectorAll(".pending_text");
+
+    if(elements && elements.length>0)
+    {
+        elements.forEach(function (element) {
+            // If we have actual content, update with that
+            if (synchro_pending_stream != "") {
+                element.innerHTML = escape_html(pending_context_preinjection) + escape_html(synchro_pending_stream);
+                // If we have actual content, stop the rotation
+                stopLoadingMessageRotation();
+            }
+            // Otherwise, the rotation will continue automatically
+        });
+    } else {
+        render_gametext(false);
+    }
+
+    handle_autoscroll(false);
 }
 
 function update_toggle_lightmode(toggle=false)
