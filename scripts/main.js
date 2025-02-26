@@ -7895,6 +7895,8 @@ function toggle_instruct_tag_format()
     let sel = document.getElementById('instruct_tag_format').value;
     let itags = get_preset_instruct_tag_format(sel);
     let use_et = document.getElementById('separate_end_tags').checked;
+    if(itags.user!="" && itags.assistant!="" && itags.system!==null)
+    {
         if(!use_et)
         {
             document.getElementById('instruct_starttag').value = itags.assistant_end + itags.user;
@@ -7913,6 +7915,7 @@ function toggle_instruct_tag_format()
             document.getElementById('instruct_endtag_end').value = itags.assistant_end;
             document.getElementById('instruct_systag_end').value = itags.system_end;
         }
+    }
 }
 function edit_instruct_tag_format()
 {
