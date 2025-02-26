@@ -754,8 +754,8 @@
 		chat_context_mod: true, //extra injection for chat mode
 		chatname: "User", //name to use in chat
 		chatopponent: defaultchatopponent,
-		instruct_starttag: "",
-		instruct_endtag: "",
+		instruct_starttag: "\\n### Instruction:\\n",
+		instruct_endtag: "\\n### Response:\\n",
 		instruct_systag: "",
 		instruct_starttag_end: "",
 		instruct_endtag_end: "",
@@ -878,10 +878,10 @@
 	const instructpresets = [
 	{
 		"id":1,
-		"name":"Deepseek",
-		"user":"",
+		"name":"Alpaca",
+		"user":"\\n### Instruction:\\n",
 		"user_end":"",
-		"assistant":"",
+		"assistant":"\\n### Response:\\n",
 		"assistant_end":"",
 		"system":"",
 		"system_end":"",
@@ -998,12 +998,12 @@
 	},
 	{
 		"id":13,
-		"name":"Alpaca",
-		"user":"\\n### Instruction:\\n",
-		"user_end":"",
-		"assistant":"\\n### Response:\\n",
-		"assistant_end":"",
+		"name":"Deepseek V2.5",
+		"user":"<｜User｜>",
+		"user_end":"<｜end▁of▁sentence｜>",
+		"assistant":"<｜Assistant｜>",
+		"assistant_end":"<｜end▁of▁sentence｜>",
 		"system":"",
 		"system_end":"",
-	},
+	}
 	];
