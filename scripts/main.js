@@ -6835,6 +6835,9 @@ function display_horde_models() {
     document.getElementById("modelquicksearch").value = "";
     let manualworker = (document.getElementById("manualworker").checked ? true : false);
 
+    // Define our default model
+    const defaultHordeModel = "koboldcpp/DeepSeek-R1-Distill-Qwen-32B-Q8_0";
+
     let modelsdone = false;
     let workersdone = false;
     let postfetchdone = false;
@@ -6859,8 +6862,17 @@ function display_horde_models() {
                 document.getElementById("pickedmodel").innerHTML = model_choices;
             } else {
                 let model_choices = "";
+                let defaultModelFound = false;
+                let defaultModelIndex = -1;
+
+
+                
                 for (let i = 0; i < models_data.length; ++i) {
                     let curr = models_data[i];
+                    if (curr.name == defaultHordeModel) {
+                        defaultModelFound = true;
+                        defaultModelIndex = i;
+                    }
                     let alrselected = (selected_models.filter(x => (x.name == curr.name)).length > 0) ? " selected" : "";
                     let mperf = parseFloat(curr.performance);
                     if (!mperf || isNaN(mperf) || mperf >= 99999) //a patch before the performance is properly fixed, we calculate it ourselves
@@ -6884,6 +6896,12 @@ function display_horde_models() {
                     model_choices += "<option value=\"" + i + "\" " + alrselected + ">" + escape_html(curr.name) + " (ETA: "+ curr.eta +"s, Queue: " + curr.queued + ", Speed: " + mperf + ", Qty: " + curr.count + ")</option>";
                 }
                 document.getElementById("pickedmodel").innerHTML = model_choices;
+                // After populating the dropdown, select our default model if it exists
+
+                if (defaultModelFound) {
+                    const selectElement = document.getElementById("pickedmodel");
+                    selectElement.value = defaultModelIndex;
+                }
             }
         }
     }
