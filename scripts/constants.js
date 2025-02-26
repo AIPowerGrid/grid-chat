@@ -780,7 +780,7 @@
 		image_negprompt: "",
 		grammar:"",
 		tokenstreammode: (localflag?2:0), //0=off,1=pollstream,2=sse
-		generate_images_model: "stable_diffusion", //"" is disabled and "*" is all, anything else is the model name pulled from stable horde
+		generate_images_model: "*", //"" is disabled and "*" is all, anything else is the model name pulled from stable horde
 		img_gen_from_instruct: true,
 		img_autogen: false,
 		img_allownsfw: true,
@@ -791,7 +791,7 @@
 		img_clipskip: -1,
 		img_steps: 20,
 		img_sampler: "Euler",
-		img_aspect:0, //0=square,1=portrait,2=landscape,3=bigsquare,4=portrait_long,5=landscape_long
+		img_aspect:6, //0=square,1=portrait,2=landscape,3=bigsquare,4=portrait_long,5=landscape_long
 		save_images: true,
 		save_remote_images: false,
 		prompt_for_savename: false,
