@@ -7653,13 +7653,8 @@ function confirm_chat_and_instruct_tags()
     localsettings.instruct_systag = document.getElementById("instruct_systag").value;
     localsettings.instruct_sysprompt = document.getElementById("instruct_sysprompt").value;
     localsettings.instruct_sysprompt = replaceAll(localsettings.instruct_sysprompt, "\\n", "\n");
-    if (localsettings.instruct_starttag == null || localsettings.instruct_starttag == "") {
-        localsettings.instruct_starttag = "\\n### Instruction:\\n";
-    }
+
     localsettings.instruct_endtag = document.getElementById("instruct_endtag").value;
-    if (localsettings.instruct_endtag == null || localsettings.instruct_endtag == "") {
-        localsettings.instruct_endtag = "\\n### Response:\\n";
-    }
     localsettings.instruct_starttag_end = document.getElementById("instruct_starttag_end").value;
     localsettings.instruct_endtag_end = document.getElementById("instruct_endtag_end").value;
     localsettings.instruct_systag_end = document.getElementById("instruct_systag_end").value;
