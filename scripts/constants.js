@@ -754,8 +754,8 @@
 		chat_context_mod: true, //extra injection for chat mode
 		chatname: "User", //name to use in chat
 		chatopponent: defaultchatopponent,
-		instruct_starttag: "\\n### Instruction:\\n",
-		instruct_endtag: "\\n### Response:\\n",
+		instruct_starttag: "<｜end▁of▁sentence｜><｜User｜>",
+		instruct_endtag: "<｜end▁of▁sentence｜><｜Assistant｜>",
 		instruct_systag: "",
 		instruct_starttag_end: "",
 		instruct_endtag_end: "",
@@ -998,7 +998,7 @@
 	},
 	{
 		"id":13,
-		"name":"Deepseek V2.5",
+		"name":"Deepseek",
 		"user":"<｜User｜>",
 		"user_end":"<｜end▁of▁sentence｜>",
 		"assistant":"<｜Assistant｜>",
