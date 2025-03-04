@@ -432,7 +432,7 @@
 	.saveloadpopup {
 		width: 660px;
 		background-color: #ffffff;
-		margin-top: 80px;
+		margin-top: 120px;
 		border-top-left-radius: 10px;
 		border-top-right-radius: 10px;
 		border-bottom-left-radius: 10px;
@@ -442,7 +442,7 @@
 		.saveloadpopup {
 			width: 100%;
 			background-color: #ffffff;
-			margin-top: 80px;
+			margin-top: 120px;
 		}
 	}
 	.saveloadgrid
@@ -452,7 +452,7 @@
 		margin-top: 4px;
 		padding: 4px;
 		display: grid;
-		gap: 4px;
+		gap: 2px;
 		font-size: 12px;
 	}
 	@media (max-width: 340px) {
@@ -2207,6 +2207,33 @@
 		background-color: #8a8a8a;
 	}
 	.bg_teal:disabled:hover {
+		background-color: #8a8a8a;
+	}
+	.bg_primary {
+		background-color: #337ab7;
+	}
+
+
+	.bg_primary:hover {
+		background-color: #286090;
+	}
+
+
+	.bg_primary:active:focus {
+		background-color: #23527c;
+	}
+
+
+	.bg_primary:focus {
+		background-color: #23527c;
+	}
+
+
+	.bg_primary:disabled {
+		background-color: #8a8a8a;
+	}
+
+	.bg_primary:disabled:hover {
 		background-color: #8a8a8a;
 	}
 

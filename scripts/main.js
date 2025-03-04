@@ -6731,6 +6731,34 @@ function trigger_admin_reload()
     });
 }
 
+var cachedsaveslotlabels = [];
+
+	function saveloadchangeslot(updatelist=false)
+	{
+		let selectedslot = document.getElementById("saveslotselecteddropdown").value;
+		let selectedslotlabel = null;
+		let choices = "";
+		for(let i=0;i<cachedsaveslotlabels.length;++i)
+		{
+			let testslot = cachedsaveslotlabels[i];
+			if(selectedslot==i)
+			{
+				selectedslotlabel = testslot;
+			}
+			let lbl = (i+1);
+			let tsdesc = (testslot.length>50)?testslot.substring(0,50)+"...":testslot;
+			let slotname = (testslot?`Local Slot `+(lbl)+` - `+tsdesc+``:`Local Slot `+(lbl)+` - [ Empty ]`);
+			choices += `<option value=${i}${(selectedslot==i)?" selected":""}>${slotname}</option>`;
+		}
+		document.getElementById("loadfromslot").disabled = (selectedslotlabel?false:true);
+		document.getElementById("downloadslot").disabled = (selectedslotlabel?false:true);
+		document.getElementById("deleteslot").disabled = (selectedslotlabel?false:true);
+		if(updatelist)
+		{
+			document.getElementById("saveslotselecteddropdown").innerHTML = choices;
+		}
+	}
+
 function display_saveloadcontainer()
 {
     mainmenu_untab(true);
@@ -6743,42 +6771,16 @@ function display_saveloadcontainer()
     }
     Promise.all(slotpromises).then(slotlabels=>
     {
-        let filetable = ``;
-        let entry = `<div style="display:flex">
-                <button type="button" style="font-size:12px; margin:2px;width:33%" name="localsave" class="btn btn-primary" onclick="hide_popups();save_file_button()">`+"💾<br>Download File"+`</button>
-                <button type="button" style="font-size:12px; margin:2px;width:33%" name="localload" class="btn btn-primary" onclick="hide_popups();load_file_button()">`+"📁<br>Open File"+`</button>
-                <button type="button" style="font-size:12px; margin:2px;width:34%" name="shareurl" class="btn btn-primary" onclick="hide_popups();share_story_button()">`+"🌐<br>Share"+`</button>
-                </div>
-                <div style="margin-top:3px; text-align: center; align-self: center; width: calc(100% - 184px);">
-                <span style="font-weight:bold;text-decoration: underline;">Temporary Browser Storage</span>
-                </div>`;
-        filetable += entry;
-
-        for(let i=0;i<slotlabels.length;++i)
-        {
-            let testslot = slotlabels[i];
-            let lbl = (i+1);
-            entry = `<div style="display:flex; height:42px;">
-                <div style="margin:3px; text-align: center; align-self: center; width: calc(100% - 184px);">
-                `+(testslot?`[ Slot `+(lbl)+` - `+testslot+` ]`:`[ Slot `+(lbl)+` - Empty ]`)+`
-                </div>
-                <div style="text-align: right; align-self: center; width: 184px;">
-                <button type="button" title="Save To Slot ${lbl}" class="btn btn-primary" onclick="save_to_slot(${i})"><img class="btnicon-save"/></button>
-                <button type="button" title="Load From Slot ${lbl}" class="btn btn-primary" onclick="load_from_slot(${i})" `+(testslot?"":"disabled")+`><img class="btnicon-load"/></button>
-                <button type="button" title="Download Slot ${lbl}" class="btn btn-primary bg_green" onclick="download_from_slot(${i})" `+(testslot?"":"disabled")+`><img class="btnicon-download"/></button>
-                <button type="button" title="Delete Slot ${lbl}" class="btn btn-primary bg_red" onclick="delete_from_slot(${i})" `+(testslot?"":"disabled")+`><img class="btnicon-delete"/></button>
-                </div></div>`;
-            filetable += entry;
-        }
+        cachedsaveslotlabels = slotlabels;
+        saveloadchangeslot(true);
         populate_corpo_leftpanel();
-        document.getElementById("saveloadentries").innerHTML = filetable;
     });
 }
 function save_to_slot(slot)
 {
     let defaultsavename = (localsettings.opmode==1?"Untitled Story":(localsettings.opmode==2?"Untitled Adventure":(localsettings.opmode==3?"Untitled Chat":"Untitled Instruct")));
     let savename = defaultsavename + " " + new Date().toLocaleString();
-    let slotnumshown = (slot+1);
+    let slotnumshown = (parseInt(slot)+1);
     indexeddb_load("slot_"+slot+"_meta","").then(testslot=>{
         if (testslot) {
             savename = testslot;
@@ -6841,7 +6843,7 @@ function download_from_slot(slot)
 }
 function delete_from_slot(slot)
 {
-    let slotnumshown = (slot+1);
+    let slotnumshown = (parseInt(slot)+1);
     msgboxYesNo("Delete story in Browser Storage Slot "+slotnumshown+"?","Delete Storage Slot "+slotnumshown,()=>{
         indexeddb_save("slot_"+slot+"_data", "");
         indexeddb_save("slot_"+slot+"_meta", "").then(()=>{display_saveloadcontainer()});
@@ -6849,6 +6851,32 @@ function delete_from_slot(slot)
         display_saveloadcontainer();
     });
 }
+
+function save_to_curr_slot()
+	{
+		let selectedslot = document.getElementById("saveslotselecteddropdown").value;
+		save_to_slot(selectedslot);
+	}
+
+
+	function load_from_curr_slot()
+	{
+		let selectedslot = document.getElementById("saveslotselecteddropdown").value;
+		load_from_slot(selectedslot);
+	}
+
+
+	function download_from_curr_slot()
+	{
+		let selectedslot = document.getElementById("saveslotselecteddropdown").value;
+		download_from_slot(selectedslot);
+	}
+
+	function delete_from_curr_slot()
+	{
+		let selectedslot = document.getElementById("saveslotselecteddropdown").value;
+		delete_from_slot(selectedslot);
+	}
 
 var cached_model_list = null;
 var cached_worker_list = null;

@@ -576,7 +576,7 @@
 	const HD_RES_PX = 768;
 	const NO_HD_RES_PX = 512;
 	const AVATAR_PX = 384;
-	const SAVE_SLOTS = 6;
+	const SAVE_SLOTS = 8;
 	const num_regex_rows = 4;
 	const default_websearch_template = `### New Task:\nFrom above text, rephrase the search engine query "{{QUERY}}" as a single short phrase (for search engines) using proper nouns, references and names to avoid ambiguity.\n\n### Rephrased Search Query Created:\n`;
 
