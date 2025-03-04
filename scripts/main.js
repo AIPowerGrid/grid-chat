@@ -10997,7 +10997,7 @@ function dispatch_submit_generation(submit_payload, input_was_empty) //if input 
                 {
                     claude_payload.system = sysprompt;
                 }
-                if(claudethinking)
+                if(claudethinking && custom_claude_model.toLowerCase().includes("claude-3-7"))
 					{
 						claude_payload.thinking = {
 							"type": "enabled",
