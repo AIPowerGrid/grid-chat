@@ -5152,13 +5152,8 @@ function preview_dynatemp(isModifiedRange)
     {
         let a1 = parseFloat(document.getElementById("dynatemp_min").value);
         let a2 = parseFloat(document.getElementById("dynatemp_max").value);
-        if (a2<a1)
-        {
-            a2 = a1;
-            document.getElementById("dynatemp_max").value = document.getElementById("dynatemp_min").value;
-        }
         let avg = (a1+a2)*0.5;
-        let diff = Math.abs(a2 - a1)*0.5;
+        let diff = (a2 - a1)*0.5;
         document.getElementById("dynatemp_range").value = diff.toFixed(3);
         document.getElementById("dynatemp_outtemp").value = avg.toFixed(3);
         document.getElementById("temperature").value = avg.toFixed(3);
@@ -5169,7 +5164,7 @@ function preview_dynatemp(isModifiedRange)
 function confirm_dynatemp()
 {
     document.getElementById("dynatempcontainer").classList.add("hidden");
-    document.getElementById("dynatemp_overview").innerText = (document.getElementById("dynatemp_range").value>0?"ON":"OFF");
+    document.getElementById("dynatemp_overview").innerText = (document.getElementById("dynatemp_range").value!=0?"ON":"OFF");
 }
 function show_dynatemp()
 {
@@ -7349,7 +7344,7 @@ function display_settings() {
     document.getElementById("dynatemp_range").value = localsettings.dynatemp_range;
     document.getElementById("dynatemp_exponent").value = localsettings.dynatemp_exponent;
     document.getElementById("smoothing_factor").value = localsettings.smoothing_factor;
-    document.getElementById("dynatemp_overview").innerText = (localsettings.dynatemp_range>0?"ON":"OFF");
+    document.getElementById("dynatemp_overview").innerText = (localsettings.dynatemp_range!=0?"ON":"OFF");
     document.getElementById("presence_penalty").value = localsettings.presence_penalty;
     document.getElementById("sampler_seed").value = localsettings.sampler_seed;
     document.getElementById("top_k").value =  document.getElementById("top_k_slide").value = localsettings.top_k;
@@ -7552,7 +7547,7 @@ function toggle_preset() {
         document.getElementById("rep_pen_slope").value = found.rep_pen_slope;
         document.getElementById("sampler_order").value = found.sampler_order.toString();
         document.getElementById("presetsdesc").innerText = found.description;
-        document.getElementById("dynatemp_overview").innerText = (document.getElementById("dynatemp_range").value>0?"ON":"OFF");
+        document.getElementById("dynatemp_overview").innerText = (document.getElementById("dynatemp_range").value!=0?"ON":"OFF");
     }else{
         document.getElementById("presetsdesc").innerText = "";
     }
@@ -7895,8 +7890,8 @@ function confirm_settings() {
     localsettings.rep_pen_slope = cleannum(localsettings.rep_pen_slope, 0, 20);
     localsettings.top_p = cleannum(localsettings.top_p, 0.002, 1);
     localsettings.min_p = cleannum(localsettings.min_p, 0.0, 1);
-    localsettings.dynatemp_range = cleannum(localsettings.dynatemp_range, 0.0, 5);
-    localsettings.dynatemp_range = (localsettings.dynatemp_range>localsettings.temperature?localsettings.temperature:localsettings.dynatemp_range);
+    localsettings.dynatemp_range = cleannum(localsettings.dynatemp_range, -5, 5);
+	localsettings.dynatemp_range = (localsettings.dynatemp_range>localsettings.temperature?localsettings.temperature:localsettings.dynatemp_range<-localsettings.temperature?-localsettings.temperature:localsettings.dynatemp_range);
     localsettings.dynatemp_exponent = cleannum(localsettings.dynatemp_exponent, 0.0, 10.0);
     localsettings.smoothing_factor = cleannum(localsettings.smoothing_factor, 0.0, 10.0);
     localsettings.presence_penalty = cleannum(localsettings.presence_penalty, -2, 2);
