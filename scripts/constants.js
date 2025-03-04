@@ -686,6 +686,9 @@
 	var placeholder_tags_data = [];
 	var thinking_pattern = "<think>([\\s\\S]+?)<\/think>";
 	var thinking_action = 1; //0=display, 1=collapse, 2=hide, 3=remove
+	var start_thinking_tag = "<think>";
+	var force_thinking_tag = false;
+	var strip_past_thinking = true;
 	var voice_typing_mode = 0; //0=off, 1=on, 2=ptt
 	var koboldcpp_has_whisper = false; //does backend support voice typing
 	var voice_is_recording = false; //currently recording voice?

@@ -3035,6 +3035,9 @@ function generate_savefile(save_images,export_settings,export_aesthetic_settings
     new_save_storyobj.websearch_template = websearch_template;
     new_save_storyobj.thinking_pattern = thinking_pattern;
     new_save_storyobj.thinking_action = thinking_action;
+    new_save_storyobj.start_thinking_tag = start_thinking_tag;
+	new_save_storyobj.force_thinking_tag = force_thinking_tag;
+	new_save_storyobj.strip_past_thinking = strip_past_thinking;
 
     if (export_settings) {
         new_save_storyobj.savedsettings = JSON.parse(JSON.stringify(localsettings));
@@ -3362,6 +3365,18 @@ function kai_json_load(storyobj, force_load_settings, ignore_multiplayer_sync)
             {
                 thinking_action = storyobj.thinking_action;
             }
+        	if(storyobj.force_thinking_tag)
+			{
+			    force_thinking_tag = storyobj.force_thinking_tag;
+			}
+			if(storyobj.strip_past_thinking)
+			{
+				strip_past_thinking = storyobj.strip_past_thinking;
+			}
+			if(storyobj.start_thinking_tag)
+			{
+				start_thinking_tag = storyobj.start_thinking_tag;
+			}
         } else {
             //v2 load
             if(storyobj.prompt != "")
@@ -8338,6 +8353,9 @@ function confirm_memory() {
         thinking_pattern = "<think>([\\s\\S]+?)<\/think>";
     }
     thinking_action = parseInt(document.getElementById("thinking_action").value);
+    force_thinking_tag = document.getElementById("force_thinking_tag").checked?true:false;
+	strip_past_thinking = document.getElementById("strip_past_thinking").checked?true:false;
+	start_thinking_tag = document.getElementById("start_thinking_tag").value;
 }
 
 function set_personal_notes()
@@ -8690,6 +8708,9 @@ function restart_new_game(save = true, keep_memory = false) {
         websearch_template = "";
         thinking_pattern = "<think>([\\s\\S]+?)<\/think>";
         thinking_action = 1;
+        force_thinking_tag = false;
+        strip_past_thinking = true;
+		start_thinking_tag = "<think>";
     }
     warn_on_quit = false;
     show_corpo_leftpanel(false);
@@ -10047,6 +10068,13 @@ function submit_generation(senttext)
 
         let truncated_context = concat_gametext(true, "","","",false,true); //no need to truncate if memory is empty
         truncated_context = truncated_context.replace(/\xA0/g,' '); //replace non breaking space nbsp
+
+        //remove past thoughts
+		if(strip_past_thinking && thinking_action>0 && thinking_pattern!="") //removal of cot
+			{
+				let pat = new RegExp(thinking_pattern, "gm");
+				truncated_context = truncated_context.replace(pat, "");
+			}
 
         let max_allowed_characters = getMaxAllowedCharacters(truncated_context, maxctxlen, maxgenamt);
 
@@ -15431,6 +15459,9 @@ function populate_regex_replacers()
     }
     document.getElementById("thinking_pattern").value = thinking_pattern;
     document.getElementById("thinking_action").value = thinking_action;
+    document.getElementById("force_thinking_tag").checked = force_thinking_tag;
+	document.getElementById("strip_past_thinking").checked = strip_past_thinking;
+	document.getElementById("start_thinking_tag").value = start_thinking_tag;
 }
 
 function populate_placeholder_tags()
