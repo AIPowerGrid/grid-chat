@@ -5220,6 +5220,20 @@ function setDryBreakers()
     },false,true);
 }
 
+var pendingassistantjailbreak = "";
+
+	function set_assistant_jailbreak()
+	{
+		inputBox("Set Assistant Jailbreak","Enter Assistant Jailbreak Prefix",pendingassistantjailbreak,"(Enter Jailbreak Prefix)",()=>{
+			let userinput = getInputBoxValue();
+			if(userinput.trim()=="")
+			{
+				userinput = "Sure, I will help with that:\\n\\n";
+			}
+			pendingassistantjailbreak = userinput;
+		},false,false);
+	}
+
 function expand_tokens_section(targetid)
 {
     let tablist = ["expandregexreplace","expandthinking","expandtokenbans","expandlogitbias","expandplaceholdertags"];
@@ -7409,6 +7423,7 @@ function display_settings() {
         document.getElementById("xtcunsupporteddiv").classList.remove("hidden");
     }
     pendingsequencebreakers = localsettings.dry_sequence_breakers;
+    pendingassistantjailbreak = localsettings.custom_jailbreak_text;
 
     document.getElementById("setgrammar").disabled = !is_using_kcpp_with_grammar();
     document.getElementById("voice_typing_mode").disabled = !is_using_kcpp_with_whisper();
@@ -7808,6 +7823,7 @@ function confirm_settings() {
     localsettings.dry_base = parseFloat(document.getElementById("dry_base").value);
     localsettings.dry_allowed_length = parseInt(document.getElementById("dry_allowed_length").value);
     localsettings.dry_sequence_breakers = pendingsequencebreakers;
+    localsettings.custom_jailbreak_text = pendingassistantjailbreak;
     localsettings.xtc_threshold = parseFloat(document.getElementById("xtc_threshold").value);
     localsettings.xtc_probability = parseFloat(document.getElementById("xtc_probability").value);
     localsettings.token_count_multiplier = parseInt(document.getElementById("token_count_multiplier").value);
@@ -9948,7 +9964,11 @@ function submit_generation(senttext)
 
                 if(localsettings.inject_jailbreak_instruct)
                 {
-                    newgen = newgen + "Sure, I will help with that:\n\n";
+                    newgen = newgen + localsettings.custom_jailbreak_text.replaceAll("\\n", "\n");
+				}
+				if(force_thinking_tag && start_thinking_tag!="")
+				{
+					newgen = newgen + start_thinking_tag.replaceAll("\\n", "\n");
                 }
             }
             else //may be continuting existing instruction OR starting a brand new session. check if first action
@@ -14708,7 +14728,6 @@ function render_corpo_ui(input)
 
     let newbodystr = "";
     input = replace_instruct_placeholders(input);
-    input = apply_display_only_regex(input);
     let chatunits = [];
     if(localsettings.opmode==3) //chat mode
     {
@@ -14735,6 +14754,7 @@ function render_corpo_ui(input)
         let curr = chatunits[i];
         let foundimg = "";
         let processed_msg = curr.msg;
+        processed_msg = apply_display_only_regex(processed_msg);
         if(processed_msg && processed_msg!="")
         {
             processed_msg = replace_noninstruct_placeholders(processed_msg,true);
