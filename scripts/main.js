@@ -7891,7 +7891,7 @@ function confirm_settings() {
     localsettings.top_p = cleannum(localsettings.top_p, 0.002, 1);
     localsettings.min_p = cleannum(localsettings.min_p, 0.0, 1);
     localsettings.dynatemp_range = cleannum(localsettings.dynatemp_range, -5, 5);
-	localsettings.dynatemp_range = (localsettings.dynatemp_range>localsettings.temperature?localsettings.temperature:localsettings.dynatemp_range<-localsettings.temperature?-localsettings.temperature:localsettings.dynatemp_range);
+	localsettings.dynatemp_range = ((localsettings.dynatemp_range > localsettings.temperature) ? localsettings.temperature : ((localsettings.dynatemp_range < -localsettings.temperature) ? -localsettings.temperature : localsettings.dynatemp_range));
     localsettings.dynatemp_exponent = cleannum(localsettings.dynatemp_exponent, 0.0, 10.0);
     localsettings.smoothing_factor = cleannum(localsettings.smoothing_factor, 0.0, 10.0);
     localsettings.presence_penalty = cleannum(localsettings.presence_penalty, -2, 2);
