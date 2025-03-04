@@ -5611,6 +5611,75 @@ function oai_model_change(autotoggle_check = false)
     }
     toggleoaichatcompl();
 }
+function claude_fetch_models()
+	{
+		let desired_claude_key = document.getElementById("custom_claude_key").value.trim();
+		let claude_ep = document.getElementById("custom_claude_endpoint").value.trim();
+		if(claude_ep.toLowerCase().includes("api.anthropic.com"))
+		{
+			//official API has broken cors settings
+			claude_ep = apply_proxy_url(claude_ep,true);
+		}
+		if(desired_claude_key=="")
+		{
+			msgbox("Claude requires an API key to fetch model list!");
+			return;
+		}
+		let dropdown = document.getElementById("custom_claude_model");
+		fetch((claude_ep + claude_models_endpoint), {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'anthropic-version':'2023-06-01',
+				'x-api-key': desired_claude_key,
+			},
+			referrerPolicy: 'no-referrer',
+		})
+
+		.then((response) => response.json())
+		.then((data) => {
+			console.log(data);
+			if (data && data.data.length > 0)
+			{
+				for (var i = dropdown.options.length - 1; i >= 0; i--) {
+					var option = dropdown.options[i];
+					dropdown.remove(option);
+				}
+				let selidx = 0;
+				for(var i = 0; i < data.data.length; i++) {
+					var opt = data.data[i];
+					var el = document.createElement("option");
+					let optname = opt.id;
+					el.textContent = optname;
+					el.value = optname;
+					dropdown.appendChild(el);
+				}
+
+
+				dropdown.selectedIndex = selidx;
+				togglepalmmodel();
+			}
+			else
+			{
+				let errmsg = "";
+				if(data && data.error)
+				{
+					errmsg = data.error;
+				}
+				else
+				{
+					errmsg = data;
+				}
+				msgbox(JSON.stringify(errmsg),"Error Encountered",false,false);
+			}
+		})
+		.catch(error => {
+		console.log("Error: " + error);
+			msgbox("Error: " + error,"Error Encountered",false,false,()=>{
+				hide_msgbox();
+			});
+		});
+	}
 function gemini_fetch_models()
 {
     let desired_gemini_key = document.getElementById("custom_palm_key").value.trim();
@@ -5776,6 +5845,13 @@ function toggleclaudemodel()
         document.getElementById("claudejailbreakprompt").classList.add("hidden");
         document.getElementById("clauderenamecompatdiv").classList.remove("hidden");
     }
+    if(document.getElementById("custom_claude_model").value.toLowerCase().includes("claude-3-7"))
+	{
+		document.getElementById("claudethinkingbox").classList.remove("hidden");
+	}else
+	{
+		document.getElementById("claudethinkingbox").classList.add("hidden");
+	}
 }
 
 let openrouter_fetch_attempted = false;
@@ -8749,7 +8825,7 @@ function apply_display_only_regex(inputtxt)
             let matchiter = 0;
             inputtxt = inputtxt.replace(/%ExpandBtn%/g, function (m) {
                 let curr = matches[matchiter];
-                let expandedhtml = `<span><button type="button" title="Show Thoughts" class="btn btn-primary" style="font-size:12px;padding:2px 2px;" onclick="toggle_hide_thinking(this)">Show Thoughts (${curr.length} characters)</button><span class="hidden">${escape_html(curr)}</span></span>`;
+                let expandedhtml = `<span><button type="button" title="Show Thoughts" class="btn btn-primary" style="font-size:12px;padding:2px 2px;" onclick="toggle_hide_thinking(this)">Show Thoughts (${curr.length} characters)</button><span class="color_lightgreen hidden"><br>${escape_html(curr)}</span></span>`;
                 ++matchiter;
                 return expandedhtml;
             });
@@ -10907,20 +10983,35 @@ function dispatch_submit_generation(submit_payload, input_was_empty) //if input 
             {
                 let sysprompt = document.getElementById("claudesystemprompt").value;
                 let assistantprompt = document.getElementById("claudejailbreakprompt").value;
+                let claudethinking = (document.getElementById("claudethinking").checked?true:false);
+
                 claude_payload =
                 {
                     "model": custom_claude_model,
                     "messages": [],
                     "max_tokens": submit_payload.params.max_length,
-                    "top_k": (submit_payload.params.top_k<1?300:submit_payload.params.top_k),
                     "temperature": submit_payload.params.temperature,
-                    "top_p": submit_payload.params.top_p,
                 };
                 claude_payload.messages.push({"role": "user", "content": submit_payload.prompt})
                 if(sysprompt)
                 {
                     claude_payload.system = sysprompt;
                 }
+                if(claudethinking)
+					{
+						claude_payload.thinking = {
+							"type": "enabled",
+							"budget_tokens": 1024
+						}
+						claude_payload.max_tokens += 1024;
+						claude_payload.temperature = 1;
+					}
+					else
+					{
+						//unsupported with thinking
+						claude_payload.top_k = (submit_payload.params.top_k<1?300:submit_payload.params.top_k);
+						claude_payload.top_p = submit_payload.params.top_p;
+					}
                 if(localsettings.opmode==1)
                 {
                     claude_payload.system = "Always respond with a direct partial continuation of the story immediately from the latest word.";
@@ -10997,9 +11088,24 @@ function dispatch_submit_generation(submit_payload, input_was_empty) //if input 
                 .then((response) => response.json())
                 .then((data) => {
                     console.log("sync finished response: " + JSON.stringify(data));
-                    if(custom_claude_key != "" && data.content && data.content.length > 0 && data.content[0].text)
+                    if(custom_claude_key != "" && data.content && data.content.length > 0)
                     {
-                        data.completion = data.content[0].text; //for claudev3
+                        let comp = "";
+							for(let i=0;i<data.content.length;++i)
+							{
+								if(data.content[i].text)
+								{
+									comp += data.content[i].text; //for claudev3
+								}
+								if(data.content[i].thinking)
+								{
+									comp += `<think>${data.content[i].thinking}</think>\n\n`; //for claudev3
+								}
+							}
+							if(comp!="")
+							{
+								data.completion = comp;
+							}
                         if(localsettings.opmode==1 && gametext_arr.length>0 && data.completion!="")
                         {
                             data.completion = cleanup_story_completion(data.completion);

@@ -523,6 +523,7 @@
 
 	const claude_submit_endpoint = "/complete";
 	const claude_submit_endpoint_v3 = "/messages";
+	const claude_models_endpoint = "/v1/models";
 
 	const default_openrouter_base = "https://openrouter.ai/api/v1";
 	const default_mistralai_base = "https://api.mistral.ai/v1";
