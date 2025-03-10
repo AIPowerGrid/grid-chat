@@ -825,7 +825,7 @@
 		rep_pen: 1.07,
 		rep_pen_range: 360,
 		rep_pen_slope: 0.7,
-		temperature: 0.75,
+		temperature: 0.6,
 		dynatemp_range: 0.0,
 		dynatemp_exponent: 1.0,
 		smoothing_factor: 0.0,
