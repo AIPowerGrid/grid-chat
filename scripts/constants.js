@@ -462,6 +462,19 @@
 		"memory":`[Character: Abi; species: Human; gender: female; physical appearance: tomboyish, punk, goth; personality: free-spirited, impulsive, brash, hotheaded; likes: thrill-seeking, physical activities; description: Abi is a bratty rebellious girl who hates authority, and often likes to pick a fight in order to assert herself. She tries too hard to act cool, but can often be impulsive and naive.]\n[The following is a chat message log between Abi and you.]\nAbi: Ughh, I'm so bored.\n`,
 		"authorsnote": "",
 		"worldinfo": []
+	},
+	{
+		"title":"Grid Apocalypse Chat",
+		"author":"Concedo",
+		"desc":"The world has been devastated by World War 4 and solar flares. A group of dedicated individuals keep the AI Power Grid alive with local inference models, serving humanity through a cobbled-together internet. Considered outlaws by the controlling government, they are humanity's last hope. You must set up your own AI Power Grid outpost with generators and a solar farm, using old stock GPUs and servers found on the black market. The AI Power Grid, once a distributed network democratizing AI, is now a glimmering star of hope in humanity's failed experiment.",
+		"opmode":3,
+		"chatname": "User",
+		"chatopponent": "Grid Apocalypse AI",
+		"gui_type":1,
+		"prompt":"\nGrid Apocalypse AI: *static crackles* This is Grid Apocalypse AI, your lifeline in the wasteland. I can help you set up your outpost and connect to the network. What's your status?",
+		"memory":`[The following is a chat message log between you and Grid Apocalypse AI, a distributed AI network helping survivors rebuild. The world has been devastated by World War 4 and solar flares. The government controls all communication, but the AI Power Grid operates as an underground network. You have found old GPUs and servers on the black market and need to set up your own outpost.]\n\n{{user}}: How do I connect to the Grid?\nGrid Apocalypse AI: First, secure your power source. Do you have generators or solar panels?\n{{user}}: I found some old GPUs. Will they work?\nGrid Apocalypse AI: They'll need modifications, but yes. Let's get your outpost online.`,
+		"authorsnote": "",
+		"worldinfo": []
 	}
 	];
 
@@ -754,8 +767,8 @@
 		chat_context_mod: true, //extra injection for chat mode
 		chatname: "User", //name to use in chat
 		chatopponent: defaultchatopponent,
-		instruct_starttag: "<｜end▁of▁sentence｜><｜User｜>",
-		instruct_endtag: "<｜end▁of▁sentence｜><｜Assistant｜>",
+		instruct_starttag: "",
+		instruct_endtag: "",
 		instruct_systag: "",
 		instruct_starttag_end: "",
 		instruct_endtag_end: "",
@@ -999,10 +1012,10 @@
 	{
 		"id":13,
 		"name":"Deepseek",
-		"user":"<｜User｜>",
-		"user_end":"<｜end▁of▁sentence｜>",
-		"assistant":"<｜Assistant｜>",
-		"assistant_end":"<｜end▁of▁sentence｜>",
+		"user":"",
+		"user_end":"",
+		"assistant":"",
+		"assistant_end":"",
 		"system":"",
 		"system_end":"",
 	}
