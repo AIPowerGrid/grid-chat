@@ -6836,7 +6836,7 @@ function display_horde_models() {
     let manualworker = (document.getElementById("manualworker").checked ? true : false);
 
     // Define our default model
-    const defaultHordeModel = "koboldcpp/DeepSeek-R1-Distill-Qwen-32B-Q8_0";
+    const defaultHordeModel = "koboldcpp/qwq-32b";
 
     let modelsdone = false;
     let workersdone = false;
@@ -6869,7 +6869,7 @@ function display_horde_models() {
                 
                 for (let i = 0; i < models_data.length; ++i) {
                     let curr = models_data[i];
-                    if (curr.name == defaultHordeModel) {
+                    if (curr.name.startsWith(defaultHordeModel)) {
                         defaultModelFound = true;
                         defaultModelIndex = i;
                     }
