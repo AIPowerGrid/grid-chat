@@ -380,7 +380,7 @@ button, html input[type=button], input[type=reset], input[type=submit] {
 	}
 	.settingsbody
 	{
-		height: calc(86vh - 94px);
+		height: calc(86vh - 294px);
 		overflow-y: auto;
 		overflow-x: hidden;
 		text-align: center;
@@ -23721,7 +23721,7 @@ function updateLoadingAnimation() {
 		</div>
 		<div class="">
 			<div id="inputrow">
-				<div style="position: relative;	padding-right: 0px; padding-right: 4px;">
+				<div style="position: relative; bottom: 0;	padding-right: 0px; padding-right: 4px;">
 					<button title="Toggle Adventure Mode" type="button" class="btn btn-primary hidden mainnav" style="line-height: 1.2; padding: 2px 6px;" id="btnmode_adventure" onclick="btn_adventure_mode()">
 						<img id="adventure_mode_img" class="input_story">
 						<br><b id="adventure_mode_txt" style="font-size: 10px;">Story</b>
@@ -23735,7 +23735,7 @@ function updateLoadingAnimation() {
 					<textarea title="User Input" style="height: 80px;" class="form-control menuinput_multiline mainnav" id="input_text" oninput="update_submit_button()" onkeypress="return handle_typing(event)" onpaste="return img_paste_event(event)" placeholder="Enter text here"></textarea>
 					<span id="token-budget" class="token-budget"></span>
 				</div>
-				<div style="position: relative; padding-right: 2px;">
+				<div style="position: relative; bottom: 0; padding-right: 2px;">
 					<button type="button" class="btn wait mainnav" id="btnsend" disabled
 						onclick="submit_generation_button(false)" onpointerdown="ptt_start()" onpointerup="ptt_end()">Loading</button>
 						<a href="#" id="abortgen" class="hidden bg_black mainnav" style="text-align: center;color: #ffaaaa;" onclick="abort_generation()"><b style="display: block;">[ABORT]</b></a>
@@ -26668,8 +26668,8 @@ function updateLoadingAnimation() {
 	<input type="file" id="tempfilepicker" style="display:none;" accept="*">
 
 	<!-- Site Footer with Terms and Policies -->
-	<div id="site-footer" style="width: 100%; background-color: rgba(0, 0, 0, 0.7); color: #ddd; text-align: center; font-size: 12px; padding: 5px 0; margin-top: 10px; z-index: 10;">
-		<a href="prohibited_use_policy.html" target="_blank" style="color: #aad; text-decoration: none; margin: 0 10px;">Use and Privacy Policy</a>
+	<div id="site-footer" style="width: 100%; background-color: rgba(0, 0, 0, 0.7); color: #ddd; text-align: center; font-size: 12px; padding: 5px 0; margin-top: 0px; z-index: 1; position: relative; bottom: 0; margin-bottom: -10px;">
+		<a href="prohibited_use_policy.html" target="_blank" style="color: #aad; text-decoration: none; margin: 0 10px;">Use and Privacy Policy</a> <a href="clear_cache.html" style="color: #aad; text-decoration: none; margin: 0 10px;">Clear Cache</a>
 		<span>© AI Power Grid</span>
 	</div>
 </body>
