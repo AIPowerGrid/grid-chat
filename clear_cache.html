@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grid Chat - Reset App Data</title>
+    <link rel="icon" type="image/png" href="aipg.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            text-align: center;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #64b5f6;
+            margin-top: 0;
+            padding-top: 20px;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        #status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #333;
+        }
+        .progress {
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #64b5f6;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        a {
+            color: #64b5f6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #64b5f6;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #5a9fe1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grid Chat - Reset App Data</h1>
+        
+        <p>This will clear all your Grid Chat data, including:</p>
+        <p>• Saved conversations and chat history<br>
+           • Custom settings and preferences<br>
+           • Cached responses and images<br>
+           • API keys and endpoints</p>
+        
+        <div id="status">Ready to reset app data...</div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div>
+            <button id="startButton" onclick="clearBrowserData()">Reset All Data</button>
+            <button onclick="window.location.href='index.html'">Go Back</button>
+        </div>
+    </div>
+
+    <script>
+        const statusElement = document.getElementById('status');
+        const progressBar = document.getElementById('progress-bar');
+        const startButton = document.getElementById('startButton');
+
+        function updateStatus(message, progress) {
+            statusElement.textContent = message;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function clearBrowserData() {
+            startButton.disabled = true;
+            updateStatus("Starting data reset...", 5);
+            
+            setTimeout(() => {
+                // Clear localStorage
+                try {
+                    updateStatus("Clearing chat history and settings...", 20);
+                    Object.keys(localStorage).forEach(key => {
+                        localStorage.removeItem(key);
+                    });
+                    console.log("localStorage cleared");
+                } catch (e) {
+                    console.error("Error clearing localStorage:", e);
+                }
+                
+                setTimeout(() => {
+                    // Clear sessionStorage
+                    try {
+                        updateStatus("Clearing temporary session data...", 40);
+                        sessionStorage.clear();
+                        console.log("sessionStorage cleared");
+                    } catch (e) {
+                        console.error("Error clearing sessionStorage:", e);
+                    }
+                    
+                    setTimeout(() => {
+                        // Delete IndexedDB databases
+                        updateStatus("Clearing stored responses and images...", 60);
+                        try {
+                            const deleteDBs = () => {
+                                return new Promise((resolve) => {
+                                    if ('databases' in indexedDB) {
+                                        indexedDB.databases().then(databases => {
+                                            const promises = databases.map(db => {
+                                                return new Promise((res) => {
+                                                    const deleteRequest = indexedDB.deleteDatabase(db.name);
+                                                    deleteRequest.onsuccess = () => {
+                                                        console.log(`IndexedDB database ${db.name} deleted`);
+                                                        res();
+                                                    };
+                                                    deleteRequest.onerror = () => res();
+                                                });
+                                            });
+                                            Promise.all(promises).then(resolve);
+                                        }).catch(() => resolve());
+                                    } else {
+                                        resolve();
+                                    }
+                                });
+                            };
+                            
+                            deleteDBs().then(() => {
+                                updateStatus("Finalizing reset...", 80);
+                                
+                                // Clear cache using Cache API if available
+                                if (window.caches) {
+                                    caches.keys().then(names => {
+                                        names.forEach(name => {
+                                            caches.delete(name);
+                                            console.log(`Cache ${name} deleted`);
+                                        });
+                                    });
+                                }
+                                
+                                setTimeout(() => {
+                                    updateStatus("Reset complete! Returning to Grid Chat...", 100);
+                                    
+                                    setTimeout(() => {
+                                        window.location.href = "index.html";
+                                    }, 1500);
+                                }, 500);
+                            });
+                        } catch (e) {
+                            console.error("Error with IndexedDB operations:", e);
+                            updateStatus("Some data could not be reset. Returning to Grid Chat anyway...", 100);
+                            setTimeout(() => {
+                                window.location.href = "index.html";
+                            }, 2000);
+                        }
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+    </script>
+</body>
+</html> 
