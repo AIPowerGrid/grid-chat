@@ -681,7 +681,7 @@
 						"description": "Successful request"
 					}
 				},
-				"description": "Retrieves the KoboldCpp preloaded story, --preloadstory configures a prepared story json save file to be hosted on the server, which frontends (such as KoboldAI Lite) can access over the API.",
+				"description": "Retrieves the KoboldCpp preloaded story, --preloadstory configures a prepared story json save file to be hosted on the server, which frontends (such as the Grid) can access over the API.",
 				"summary": "Retrieves the KoboldCpp preloaded story",
 				"tags": [
 					"api/extra"
@@ -784,7 +784,7 @@
 						"description": "Successful request"
 					}
 				},
-				"description": "Fetches the current multiplayer turn information. Only useful for Multiplayer sessions in KoboldAI Lite.",
+				"description": "Fetches the current multiplayer turn information. Only useful for Multiplayer sessions in the Grid.",
 				"summary": "Fetches the current multiplayer turn information.",
 				"tags": [
 					"api/extra"
